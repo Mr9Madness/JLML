@@ -1,0 +1,46 @@
+// set page.title "jlml test page";
+
+// declare comp "components/";
+// declare nav "nav";
+// declare RowInput "comp.input";
+// declare jlml "jlml.github.io/pack/";
+
+{
+	nav: using nav;
+    tags: container;
+
+    {
+        tags: "form-row";
+
+        input:
+        {
+            tags: "form-control";
+            type: Text;
+            name: "testInput";
+            placeholder: "Placeholder Value";
+            text: "Default Value";
+
+            label:
+            {
+                tags: "col-form";
+                text: "Text";
+            }
+
+            description: {
+                tags: "form-text text-muted";
+                text: "Help text";
+            }
+        }
+    }
+    input: using jlml.RowInput with(input)
+    {
+        tags: input.tags + "form-row" + "horizontal";
+        name: "testInput";
+        text: "imported input";
+    };
+
+    button: {
+        tags: "btn btn-primary";
+        text: "Submit";
+    }
+}
