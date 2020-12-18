@@ -3,8 +3,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using JLML.Objects;
 using JLML.Parsers;
-using JLML.Values;
 
 namespace JLML
 {
@@ -15,8 +15,8 @@ namespace JLML
 			Generated.JLMLLexer lexer = new Generated.JLMLLexer(new AntlrInputStream(fileText));
 			Generated.JLMLParser parser = new Generated.JLMLParser(new CommonTokenStream(lexer));
 
-			JLMLVisitor a = new JLMLVisitor();
-			return (BaseScript)a.Visit(parser.jlml());
+			ElementVisitor visitor = new ElementVisitor();
+			return (BaseScript)parser.jlml().Accept(visitor);
 		}
 	}
 }

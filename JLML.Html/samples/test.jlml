@@ -1,46 +1,61 @@
-// set page.title "jlml test page";
+set page.title "jlml test page";
 
-// declare comp "components/";
-// declare nav "nav";
-// declare RowInput "comp.input";
-// declare jlml "jlml.github.io/pack/";
+declare comp "components/";
+declare nav "nav";
+declare RowInput "comp.input";
+declare jlml "jlml.github.io/pack/";
 
 {
 	nav: using nav;
-    tags: container;
+	tags: "container";
 
-    {
-        tags: "form-row";
+	image: when page.width < 900
+	{
+		description: {
+			text: "Only shown when screen is smaller then 900 pixels"
+		}
+	}
 
-        input:
-        {
-            tags: "form-control";
-            type: Text;
-            name: "testInput";
-            placeholder: "Placeholder Value";
-            text: "Default Value";
+	form: {
+		tags: when page.width > 900 then "container" else "container-fluid";
 
-            label:
-            {
-                tags: "col-form";
-                text: "Text";
-            }
+		input:
+		{
+			tags: "form-control";
+			type: Text;
+			name: "testInput";
+			placeholder: "Placeholder Value";
+			text: "Default Value";
 
-            description: {
-                tags: "form-text text-muted";
-                text: "Help text";
-            }
-        }
-    }
-    input: using jlml.RowInput with(input)
-    {
-        tags: input.tags + "form-row" + "horizontal";
-        name: "testInput";
-        text: "imported input";
-    };
+			label:
+			{
+				tags: "col-form";
+				text: "Text";
+			}
 
-    button: {
-        tags: "btn btn-primary";
-        text: "Submit";
-    }
+			description: {
+				tags: "form-text text-muted";
+				text: "Help text";
+			}
+		}
+		select: {
+			values: ("first option", "second option");
+
+			option: {
+				text: value;
+			};
+		}
+		input: using jlml.RowInput with(input)
+		{
+			tags: input.tags + "form-row" + "horizontal";
+			name: "testInput";
+			text: "imported input";
+		};
+		button: {
+			type: "submit";
+			tags: "btn btn-primary";
+			text: "Submit";
+		}
+	}
+
 }

@@ -40,11 +40,23 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitJlml([NotNull] JLMLParser.JlmlContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="JLMLParser.obj"/>.
+	/// Visit a parse tree produced by <see cref="JLMLParser.headers"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitObj([NotNull] JLMLParser.ObjContext context);
+	Result VisitHeaders([NotNull] JLMLParser.HeadersContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.element"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitElement([NotNull] JLMLParser.ElementContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.elementkey"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitElementkey([NotNull] JLMLParser.ElementkeyContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="JLMLParser.pair"/>.
 	/// </summary>
@@ -75,5 +87,23 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWith([NotNull] JLMLParser.WithContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.when"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhen([NotNull] JLMLParser.WhenContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.whenthen"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhenthen([NotNull] JLMLParser.WhenthenContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitList([NotNull] JLMLParser.ListContext context);
 }
 } // namespace JLML.Generated

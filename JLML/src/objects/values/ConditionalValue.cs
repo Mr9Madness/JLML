@@ -1,0 +1,17 @@
+using System;
+using JLML.Visitors;
+
+namespace JLML.Objects.Values
+{
+	public class ConditionalValue : IValue
+	{
+		public string Attribute { get; set; }
+
+		public Func<BaseScript, object> Condition { get; set; }
+
+		public string Accept(IValueVisitor<string> visitor)
+		{
+			return visitor.Visit(this);
+		}
+	}
+}

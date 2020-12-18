@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using JLML.Visitors;
 
-namespace JLML.Values
+namespace JLML.Objects.Values
 {
-	public class CalculatedValue : ObjectValue
+	public class CalculatedValue : IValue
 	{
 		public CalculatedValue()
 		{
@@ -13,7 +13,7 @@ namespace JLML.Values
 			Values = new List<object>();
 		}
 
-		public string Attribute { get; init; }
+		public string Attribute { get; set; }
 
 		public List<char> Operator { get; init; }
 
@@ -21,7 +21,7 @@ namespace JLML.Values
 
 		public List<object> Values { get; init; }
 
-		public override string Accept(IValueVisitor<string> visitor)
+		public string Accept(IValueVisitor<string> visitor)
 		{
 			return visitor.Visit(this);
 		}

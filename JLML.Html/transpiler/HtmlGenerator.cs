@@ -7,7 +7,7 @@ namespace JLML.Html.Generator
 {
 	public static class HtmlGenerator
 	{
-		public static string CreateHtmlBase(Dictionary<string, string> pageOptions, IEnumerable<string> children)
+		public static string CreateHtmlBase(Dictionary<string, string> pageOptions, IEnumerable<string> attrs, IEnumerable<string> childObjs)
 		{
 			StringBuilder builder = new StringBuilder();
 
@@ -18,9 +18,9 @@ namespace JLML.Html.Generator
 			builder.AppendLine($"<title>{title}</title>");
 
 			builder.AppendLine("</head>");
-			builder.AppendLine("<body>");
+			builder.AppendLine($"<body {string.Join(' ', attrs)}>");
 
-			foreach (var item in children) builder.AppendLine(item);
+			foreach (var child in childObjs) builder.AppendLine(child);
 
 			builder.AppendLine("</body>");
 			builder.Append("</html>");
@@ -30,8 +30,8 @@ namespace JLML.Html.Generator
 
 		/// <summary>
 		/// Create a html tag from provided id, attributes and child element/objects.
-		/// In format <{<see cref="id">} {<see cref="attrs">} /> if no elements/objects provided.
-		/// Otherwise in normal html format <{<see cref="id">} {<see cref="attrs">}></{<see cref="id">}>
+		/// In format &lt;{<paramref name="id" />} {<paramref name="attrs" />}&gt; if no elements/objects provided.
+		/// Otherwise in normal html format &lt;{<paramref name="id" />} {<paramref name="attrs" />}&gt;&lt;/{<paramref name="id" />}&gt;
 		/// </summary>
 		public static string CreateHtmlTag(string id, IEnumerable<string> attrs, IEnumerable<string> childObjs)
 		{

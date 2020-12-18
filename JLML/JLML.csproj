@@ -5,7 +5,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.0" />
+		<PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.8.0" />
 	</ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using JLML.Html.Visitors;
-using JLML.Values;
+using JLML.Objects;
 
 namespace JLML.Html.Transpiler
 {
@@ -9,7 +9,7 @@ namespace JLML.Html.Transpiler
 	{
 		public string ToScript(BaseScript value)
 		{
-			ValueVisitor visitor = new ValueVisitor();
+			ElementVisitor visitor = new ElementVisitor();
 			return value.Accept(visitor);
 		}
 	}

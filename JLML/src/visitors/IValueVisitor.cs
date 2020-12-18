@@ -1,4 +1,4 @@
-using JLML.Values;
+using JLML.Objects.Values;
 
 namespace JLML.Visitors
 {
@@ -8,14 +8,6 @@ namespace JLML.Visitors
 
 		public T Visit(DataValue value);
 
-		public T Visit(ImportValue value);
-
-		public T Visit(ObjectValue value);
-
-		public T Visit(ReferenceValue value);
-
-		public T Visit(BaseScript value);
-
-		public T Visit(Value value);
+		public T Visit(ConditionalValue value);
 	}
 }
