@@ -26,18 +26,24 @@ namespace JLML.Parsers
 
 		public override IValue VisitValue([NotNull] JLMLParser.ValueContext context)
 		{
-			ITerminalNode identif = context.IDENTIFIER();
 			ITerminalNode @string = context.STRING();
+			ITerminalNode identif = context.PROPERTY_NAME();
 			ITerminalNode integer = context.NUMBER();
 			ITerminalNode literal = context.LITERAL();
 
-			return context switch
+			if(@string != null) return GetDataValueFromNode(@string, typeof(string));
+			if(integer != null) return GetDataValueFromNode(integer, typeof(int));
+			if(literal != null) return GetDataValueFromNode(literal, typeof(bool));
+			if(identif != null) return new VariableValue { Value = identif.GetText() };
+
+			return new DataValue { DataType = typeof(string), Value = context.GetText() };
+		}
+
+		public override ConcatValue VisitConcat([NotNull] JLMLParser.ConcatContext context)
+		{
+			return new ConcatValue
 			{
-				_ when identif != null => GetDataValueFromNode(identif, typeof(object)),
-				_ when @string != null => GetDataValueFromNode(@string, typeof(string)),
-				_ when integer != null => GetDataValueFromNode(integer, typeof(int)),
-				_ when literal != null => GetDataValueFromNode(literal, typeof(bool)),
-				_ => new DataValue { DataType = typeof(string), Value = context.GetText() }
+				Values = context.USABLE_TOKENS().Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
 			};
 		}
 
@@ -45,7 +51,7 @@ namespace JLML.Parsers
 		{
 			return new ListValue
 			{
-				Values = context.USABLE_TOKENS().Select(o => GetValueFromString(o.GetText())).ToList(),
+				Values = context.USABLE_TOKENS().Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
 			};
 		}
 
@@ -70,7 +76,10 @@ namespace JLML.Parsers
 
 			var values = context.value();
 			var value1 = values[0].GetText();
-			var value2 = values[1].GetText();
+
+			string value2 = property;
+			if(values.Length > 1)
+				value2 = values[1].GetText();
 
 			string condition = $"page => {property} {compareTokens} {comparableToken} ? {value1} : {value2}";
 			return new ConditionalValue
@@ -96,19 +105,6 @@ namespace JLML.Parsers
 
 			else if(!value.Contains('"')) return typeof(object);
 			else return typeof(string);
-		}
-
-		private object GetValueFromString(string value)
-		{
-			if (int.TryParse(value, out int intValue)) return intValue;
-			else if (Double.TryParse(value, out double doubleValue)) return doubleValue;
-
-			else if (DateTime.TryParse(value, out DateTime datetimeValue)) return datetimeValue;
-
-			else if (char.TryParse(value, out char charValue)) return charValue;
-
-			else if (!value.Contains('"')) return value;
-			else return value;
 		}
 	}
 }

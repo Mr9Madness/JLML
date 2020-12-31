@@ -82,6 +82,12 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMath([NotNull] JLMLParser.MathContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.loop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLoop([NotNull] JLMLParser.LoopContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="JLMLParser.with"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -99,6 +105,12 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitWhenthen([NotNull] JLMLParser.WhenthenContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.concat"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitConcat([NotNull] JLMLParser.ConcatContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="JLMLParser.list"/>.
 	/// </summary>

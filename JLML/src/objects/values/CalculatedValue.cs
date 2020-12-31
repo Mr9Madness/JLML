@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JLML.Objects.Elements;
 using JLML.Visitors;
 
 namespace JLML.Objects.Values
@@ -14,6 +15,8 @@ namespace JLML.Objects.Values
 		}
 
 		public string Attribute { get; set; }
+
+		public IElement Element { get; set; }
 
 		public List<char> Operator { get; init; }
 

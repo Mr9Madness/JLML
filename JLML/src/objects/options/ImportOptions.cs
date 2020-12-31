@@ -1,4 +1,5 @@
-﻿using JLML.Visitors;
+﻿using JLML.Objects.Elements;
+using JLML.Visitors;
 
 namespace JLML.Objects.Options
 {
@@ -6,7 +7,8 @@ namespace JLML.Objects.Options
 	{
 		public string ImportReference { get; init; }
 		public string ReferenceVariable { get; init; }
+		public IElement Element { get; set; }
 
-		public string Accept(IOptionVisitor<string> visitor) => visitor.Visit(this);
+		public IElement Accept(IOptionVisitor<IElement> visitor) => visitor.Visit(this);
 	}
 }

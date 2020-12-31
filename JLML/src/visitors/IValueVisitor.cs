@@ -9,5 +9,9 @@ namespace JLML.Visitors
 		public T Visit(DataValue value);
 
 		public T Visit(ConditionalValue value);
+
+		public T Visit(VariableValue value);
+
+		public T Visit(ConcatValue value);
 	}
 }

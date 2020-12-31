@@ -1,3 +1,4 @@
+using JLML.Objects.Elements;
 using JLML.Visitors;
 
 namespace JLML.Objects.Values
@@ -7,6 +8,8 @@ namespace JLML.Objects.Values
 		public HeaderType Type { get; set; }
 
 		public string Attribute { get; set; }
+
+		public IElement Element { get; set; }
 
 		public string Value { get; set; }
 

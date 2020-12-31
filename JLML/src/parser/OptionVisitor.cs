@@ -33,5 +33,17 @@ namespace JLML.Parsers
 				ReferenceVariable = withExpression.GetText(),
 			};
 		}
+
+		public override LoopOptions VisitLoop([NotNull] JLMLParser.LoopContext context)
+		{
+			var loopIdentifier = context.IDENTIFIER();
+			var loopProperty = context.PROPERTY_NAME();
+
+			return new LoopOptions
+			{
+				ListRef = loopIdentifier.GetText(),
+				ValueRef = loopProperty.GetText(),
+			};
+		}
 	}
 }

@@ -39,15 +39,24 @@ declare jlml "jlml.github.io/pack/";
 			}
 		}
 		select: {
-			values: ("first option", "second option");
+			values: ("first option", "second option", "show secret option 1", "show secret option 2");
+//			othervalues: ("secret option 1", "secret option 2");
 
 			option: {
+				text: "top action";
+			}
+
+			option: for value in values {
 				text: value;
 			};
+//			option: for value in othervalues
+//				when value == $("show ", value) {
+//				text: value;
+//			}
 		}
 		input: using jlml.RowInput with(input)
 		{
-			tags: input.tags + "form-row" + "horizontal";
+			tags: $("form-row", "horizontal");
 			name: "testInput";
 			text: "imported input";
 		};

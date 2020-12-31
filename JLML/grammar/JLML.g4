@@ -1,42 +1,43 @@
-/** Taken from "The Definitive ANTLR 4 Reference" by Terence Parr */
-
-// Derived from http://json.org
 grammar JLML;
 
 @header { #pragma warning disable 3021 }
 
 // Parser
-jlml: headers* element+;
+jlml		: headers* element+;
 
-headers	: DECLARE_STATEMENT | SET_STATEMENT;
+headers		: DECLARE_STATEMENT | SET_STATEMENT;
 
 element		: elementkey? OPEN_BRACE (element | pair)+ CLOSE_BRACE;
-elementkey	: key COLON (with | when)?;
+elementkey	: IDENTIFIER COLON with? loop? when?;
 
 pair		: key COLON value SEMICOLON?;
 key			: IDENTIFIER;
-value		: IDENTIFIER
-			| STRING
+value		: STRING
+			| PROPERTY_NAME
 			| NUMBER
 			| LITERAL
+			| concat
 			| list
 			| value math+
 			| whenthen;
 
 math		: op=ADDICTIVE_OPERATORS value
 			| op=MULTIPLICATIVE_OPERATORS value;
-with		: 'using' STRING WITH_EXPRESSION?;
-when		: 'when' PROPERTY_NAME COMPARE_TOKENS USABLE_TOKENS;
-whenthen	: 'when' PROPERTY_NAME COMPARE_TOKENS USABLE_TOKENS 'then' value ('else' value)?;
 
-list		: '(' USABLE_TOKENS (',' USABLE_TOKENS)* ')' | '(' ')';
+loop		: 'for' IDENTIFIER 'in' PROPERTY_NAME;
+with		: 'using' STRING WITH_EXPRESSION?;
+when		: ('when' | 'if') PROPERTY_NAME COMPARE_TOKENS (USABLE_TOKENS | concat);
+whenthen	: ('when' | 'if') PROPERTY_NAME COMPARE_TOKENS USABLE_TOKENS 'then' value ('else' value)?;
+
+concat		: '$' '(' (USABLE_TOKENS ','?)+ ')' | '(' ')';
+list		: '(' (USABLE_TOKENS ','?)+ ')' | '(' ')';
 
 // Lexer
 
-IDENTIFIER			: [a-zA-Z] ([a-zA-Z0-9._-])*;
+IDENTIFIER			: [a-zA-Z] ([a-zA-Z0-9_-])*;
 STRING				: '"' DOUBLE_QUOTE_CHAR* '"' | '\'' SINGLE_QUOTE_CHAR* '\'';
 NUMBER				: '-'? INT ('.' [0-9]+)? EXP?;
-LITERAL				: 'true' | 'false' | 'null';
+LITERAL				: 'true' | 'false';
 
 USABLE_TOKENS		: IDENTIFIER | STRING | NUMBER | LITERAL;
 

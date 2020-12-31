@@ -1,4 +1,5 @@
 using System;
+using JLML.Objects.Elements;
 using JLML.Visitors;
 
 namespace JLML.Objects.Values
@@ -6,6 +7,8 @@ namespace JLML.Objects.Values
 	public class ConditionalValue : IValue
 	{
 		public string Attribute { get; set; }
+
+		public IElement Element { get; set; }
 
 		public Func<BaseScript, object> Condition { get; set; }
 
