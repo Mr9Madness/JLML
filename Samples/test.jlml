@@ -1,16 +1,16 @@
 set page.title "jlml test page";
 set page.style "";
 
-declare comp "samples/components/";
+declare comp "https://mr9madness.github.io/JLML/samples/components/";
 
-declare firstnav "samples/nav";
-declare jlml "jlml.github.io/pack.jlml";
-declare jlmlother "jlml.github.io/pack-";
+declare firstnav "https://mr9madness.github.io/JLML/samples/nav";
+declare jlml "https://mr9madness.github.io/JLML/samples/pack.jlml";
+declare jlmlloose "https://mr9madness.github.io/JLML/samples/loose/";
 
 {
 	nav: using firstnav;
 	nav: using nav from jlml;
-	nav: using nav from jlmlother;
+	nav: using nav from jlmlloose;
 	tags: "container";
 
 	image: when page.width < 900

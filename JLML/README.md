@@ -8,32 +8,32 @@ JLML (json like markup language) is a markup language concept in a json like for
 
 A jlml document is at the top level comprised of two or more things:
 
-- [Headers](https://jlml.github.io/doc/headers.md).
+- [Headers](https://mr9madness.github.io/JLML/api/headers.md).
 These are either a `declare` or `set` statement
   - [Declare](). `declare jlml "jlml.github.io/pack/";`
   - [Set](). `set page.title "JLML Page";`
-- [Base Element/Elements](https://jlml.github.io/doc/elements.md). Every document has to have at least one but can have more. This can optionally be an named element
-  - [Elements](https://jlml.github.io/doc/elements.md).
+- [Base Element/Elements](https://mr9madness.github.io/JLML/api/elements.md). Every document has to have at least one but can have more. This can optionally be an named element
+  - [Elements](https://mr9madness.github.io/JLML/api/elements.md).
   `{ ... }`
-  - [Named element](https://jlml.github.io/doc/named_elements.md).
+  - [Named element](https://mr9madness.github.io/JLML/api/named_elements.md).
   `nav: { ... }`
 
 ### Lower levers
 
 Going deeper in the base element you have a few more things.
 
-- [Values](https://jlml.github.io/doc/values.md). An element can have a number of values
+- [Values](https://mr9madness.github.io/JLML/api/values.md). An element can have a number of values
   - `tags: "container";`
-- [Options](https://jlml.github.io/doc/options.md). These can be used to import other code or give conditions to elements
-  - [Import options](https://jlml.github.io/doc/import_options.md). `using jlml.nav;`
-  - [Conditional options](https://jlml.github.io/doc/conditional_options.md). `if page.width < 900`
+- [Options](https://mr9madness.github.io/JLML/api/options.md). These can be used to import other code or give conditions to elements
+  - [Import options](https://mr9madness.github.io/JLML/api/import_options.md). `using jlml.nav;`
+  - [Conditional options](https://mr9madness.github.io/JLML/api/conditional_options.md). `if page.width < 900`
 
 ## Complete sample
 
 ```lang-default
 // Headers statements
-declare jlml "jlml.github.io/pack/";
-declare images "jlml.github.io/images/";
+declare jlml "jlml.github.io/pack";
+declare images "jlml.github.io/images";
 
 // Document base element
 {
