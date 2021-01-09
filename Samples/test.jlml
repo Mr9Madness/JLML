@@ -1,0 +1,70 @@
+set page.title "jlml test page";
+
+declare comp "components/";
+declare nav "nav";
+declare RowInput "comp.input";
+declare jlml "jlml.github.io/pack/";
+
+{
+	nav: using nav;
+	tags: "container";
+
+	image: when page.width < 900
+	{
+		description: {
+			text: "Only shown when screen is smaller then 900 pixels"
+		}
+	}
+
+	form: {
+		tags: when page.width > 900 then "container" else "container-fluid";
+
+		input:
+		{
+			tags: "form-control";
+			type: Text;
+			name: "testInput";
+			placeholder: "Placeholder Value";
+			text: "Default Value";
+
+			label:
+			{
+				tags: "col-form";
+				text: "Text";
+			}
+
+			description: {
+				tags: "form-text text-muted";
+				text: "Help text";
+			}
+		}
+		select: {
+			values: ("first option", "second option", "show secret option 1", "show secret option 2");
+//			othervalues: ("secret option 1", "secret option 2");
+
+			option: {
+				text: "top action";
+			}
+
+			option: for value in values {
+				text: value;
+			};
+//			option: for value in othervalues
+//				when value == $("show ", value) {
+//				text: value;
+//			}
+		}
+		input: using jlml.RowInput with(input)
+		{
+			tags: $("form-row", "horizontal");
+			name: "testInput";
+			text: "imported input";
+		};
+		button: {
+			type: "submit";
+			tags: "btn btn-primary";
+			text: "Submit";
+		}
+	}
+
+}

@@ -1,1 +1,0 @@
-java -jar antlr-4.9-complete.jar -Dlanguage=CSharp -package JLML.Generated -no-listener -visitor JLML.g4 -o generated/
