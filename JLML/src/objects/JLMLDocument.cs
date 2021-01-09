@@ -6,29 +6,27 @@ using JLML.Visitors;
 
 namespace JLML.Objects
 {
-	public class BaseScript : IElement
+	public class JLMLDocument : IElement
 	{
-		public BaseScript()
+		public JLMLDocument()
 		{
-			Headers = new List<HeaderValue>();
+			Attributes = new List<IValue>();
+			Children = new List<IElement>();
+			current = new ElementContext(this);
 		}
 
-		public BaseScript(IElement element) : this()
+		public JLMLDocument(IElement element)
 		{
 			Attributes = element.Attributes;
 			Children = element.Children;
-			parent = new ElementContext(this);
+			current = new ElementContext(this);
 		}
-
-		public string FileName { get; set; }
-
-		public ICollection<HeaderValue> Headers { get; init; }
 
 		public ICollection<IValue> Attributes { get; init; }
 		public ICollection<IElement> Children { get; init; }
 
-		private ElementContext parent;
-		public ElementContext Parent { get => parent; set => parent = value; }
+		private ElementContext current;
+		public ElementContext Current { get => current; set => current = value; }
 
 		public string Accept(IElementVisitor<string> visitor)
 		{

@@ -10,7 +10,7 @@ namespace JLML.Objects.Values
 
 		public IElement Element { get; set; }
 
-		public Func<BaseScript, object> Condition { get; set; }
+		public Func<JLMLDocument, object> Condition { get; set; }
 
 		public string Accept(IValueVisitor<string> visitor)
 		{

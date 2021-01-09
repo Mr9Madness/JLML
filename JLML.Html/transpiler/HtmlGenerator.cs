@@ -2,23 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JLML.Contexts;
 
 namespace JLML.Html.Generator
 {
 	public static class HtmlGenerator
 	{
-		public static string CreateHtmlBase(Dictionary<string, string> pageOptions, IEnumerable<string> attrs, IEnumerable<string> childObjs)
+		/// <summary>
+		/// Create the base body tag with provided options and child element/objects.
+		/// </summary>
+		public static string CreateHtmlBase(PageContext pageOptions, IEnumerable<string> childObjs)
 		{
 			StringBuilder builder = new StringBuilder();
 
 			builder.Append("<html>");
 			builder.AppendLine("<head>");
 
-			string title = pageOptions.GetValueOrDefault("title") ?? "JLML Page";
-			builder.AppendLine($"<title>{title}</title>");
+			var title = pageOptions["title"];
+			if(title != null)
+				builder.AppendLine($"<title>{title}</title>");
 
 			builder.AppendLine("</head>");
-			builder.AppendLine($"<body {string.Join(' ', attrs)}>");
+			builder.AppendLine($"<body>");
 
 			foreach (var child in childObjs) builder.AppendLine(child);
 

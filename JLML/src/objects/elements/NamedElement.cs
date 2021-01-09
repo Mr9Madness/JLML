@@ -33,7 +33,7 @@ namespace JLML.Objects.Elements
 		// Options when element needs to loop
 		public LoopOptions? LoopOptions { get; set; } = null;
 
-		public void LoadImport(IElement importedElement)
+		public virtual void LoadImport(IElement importedElement)
 		{
 			foreach (var child in importedElement.Children) Children.Add(child);
 
@@ -47,12 +47,12 @@ namespace JLML.Objects.Elements
 		}
 
 
-		public string Accept(IElementVisitor<string> visitor)
+		public virtual string Accept(IElementVisitor<string> visitor)
 		{
 			return visitor.Visit(this);
 		}
 
-		public object Clone()
+		public virtual object Clone()
 		{
 			return new NamedElement
 			{

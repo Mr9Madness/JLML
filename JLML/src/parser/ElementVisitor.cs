@@ -18,15 +18,15 @@ namespace JLML.Parsers
 
 		private IElement currentElement = null;
 
-		public override BaseScript VisitJlml([NotNull] JLMLParser.JlmlContext context)
+		public override JLMLDocument VisitJlml([NotNull] JLMLParser.JlmlContext context)
 		{
-			BaseScript baseScript = new BaseScript();
-
-			var headerContexts = context.headers();
-			for (int i = 0; i < headerContexts.Length; i++)
-				baseScript.Headers.Add(headerContexts[i].Accept(valueVisitor) as HeaderValue);
-
+			JLMLDocument baseScript = new JLMLDocument();
 			currentElement = baseScript;
+
+			var headerContext = context.headers();
+			if(headerContext != null)
+				_ = headerContext.Accept(this);
+
 			var elementContexts = context.element();
 			for (int i = 0; i < elementContexts.Length; i++)
 			{
@@ -35,6 +35,20 @@ namespace JLML.Parsers
 			}
 
 			return baseScript;
+		}
+
+		public override IElement VisitHeaders([NotNull] JLMLParser.HeadersContext context)
+		{
+			var declareHeaders = context.assignheader();
+			var setHeaders = context.setheader();
+
+			for (int i = 0; i < declareHeaders.Length; i++)
+				currentElement.Attributes.Add(declareHeaders[i].Accept(valueVisitor));
+
+			for (int i = 0; i < setHeaders.Length; i++)
+				currentElement.Attributes.Add(setHeaders[i].Accept(valueVisitor));
+
+			return currentElement;
 		}
 
 		public override IElement VisitElement([NotNull] JLMLParser.ElementContext context)
@@ -59,11 +73,18 @@ namespace JLML.Parsers
 
 		public override IElement VisitElementkey([NotNull] JLMLParser.ElementkeyContext context)
 		{
-			var with = context.with().Accept(optionVisitor) as ImportOptions;
-			var when = context.when().Accept(optionVisitor) as ConditionalOptions;
-			var loop = context.loop().Accept(optionVisitor) as LoopOptions;
+			var withContext = context.with();
+			var whenContext = context.when();
+			var loopContext = context.loop();
+			ImportOptions with = null;
+			ConditionalOptions when = null;
+			LoopOptions loop = null;
 
-			return GetNamedElement(context.IDENTIFIER().GetText(), with, when, loop);
+			if(withContext != null) with = withContext.Accept(optionVisitor) as ImportOptions;
+			if(whenContext != null) when = whenContext.Accept(optionVisitor) as ConditionalOptions;
+			if(loopContext != null) loop = loopContext.Accept(optionVisitor) as LoopOptions;
+
+			return GetNamedElement(context.IDENTIFIER().GetTextValue(), with, when, loop);
 		}
 
 		public override IElement VisitErrorNode(IErrorNode node)
@@ -87,7 +108,7 @@ namespace JLML.Parsers
 			return key;
 		}
 
-		private IElement GetNamedElement(string name, ImportOptions with, ConditionalOptions when, LoopOptions loop)
+		private IElement GetNamedElement(string name, [Nullable] ImportOptions with, [Nullable] ConditionalOptions when, [Nullable] LoopOptions loop)
 		{
 			if(Enum.TryParse<ElementName>(name, true, out ElementName elementName))
 			{

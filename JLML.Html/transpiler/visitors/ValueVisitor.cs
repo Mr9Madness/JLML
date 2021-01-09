@@ -34,7 +34,7 @@ namespace JLML.Html.Visitors
 
 		public string Visit(VariableValue value)
 		{
-			var variableValue = pageContext[value.Value];
+			var variableValue = GetValue(value);
 			return $@"{HtmlGenerator.GetHtmlAttrFromId(value.Attribute)}=""{variableValue}""";
 		}
 
@@ -46,7 +46,7 @@ namespace JLML.Html.Visitors
 				DataValue val = value.Values[i];
 				if(val is VariableValue var)
 				{
-					var text = pageContext[var.Value] ?? value.Element.Parent[var.Value];
+					var text = GetValue(var);
 					builder.Append(text);
 				}
 				else
@@ -54,6 +54,12 @@ namespace JLML.Html.Visitors
 			}
 
 			return builder.ToString();
+		}
+
+		private object GetValue(DataValue value)
+		{
+			string valueId = value.Value.ToString();
+			return pageContext[valueId] ?? value.Element.Current[valueId];
 		}
 	}
 }

@@ -4,31 +4,38 @@ namespace JLML.Contexts
 {
 	public class PageContext
 	{
-		private Page page;
+		private Dictionary<string, object> props;
 
-		public PageContext(Page page)
+		public PageContext()
 		{
-			this.page = page;
+			props = new Dictionary<string, object>
+			{
+				{ "Width", 1920 }
+			};
 		}
 
 #nullable enable
 		public object? this[string name]
 		{
 			get {
-				var prop = typeof(Page).GetProperty(name, System.Reflection.BindingFlags.IgnoreCase);
-				return prop?.GetValue(page);
+				if(!props.ContainsKey(name)) return null;
+				return props.GetValueOrDefault(name);
 			}
 			set {
-				var prop = typeof(Page).GetProperty(name, System.Reflection.BindingFlags.IgnoreCase);
-				var val = prop?.GetValue(page);
+				if (!props.ContainsKey(name)) return;
+				var val = props.GetValueOrDefault(name);
 
-				if(prop == null || val == null) return;
-				prop.SetValue(page, value);
+				if(val == null) return;
+				props[name] = value?.ToString();
 			}
 		}
-	}
-	public class Page
-	{
-		public int Width { get; set; }
+
+		public void AddRange(Dictionary<string, string> objects)
+		{
+			foreach (var item in objects)
+			{
+				props.Add(item.Key, item.Value);
+			}
+		}
 	}
 }

@@ -7,59 +7,19 @@ using JLML.Visitors;
 
 namespace JLML.Objects.Elements
 {
-	public class ImageElement : IElement, IElementOptions
+	public class ImageElement : NamedElement, IElement, IElementOptions
 	{
 		public ImageElement()
 		{
 			Attributes = new List<IValue>();
 			Children = new List<IElement>();
 			Current = null;
+			Identifier = "image";
 		}
 
-		public ICollection<IValue> Attributes { get; init; }
-		public ICollection<IElement> Children { get; init; }
-		public ElementContext Current { get; set; }
-
-#nullable enable
-
-		// Options when element has import
-		public ImportOptions? ImportOptions { get; set; } = null;
-
-		// Options when element needs to loop
-		public LoopOptions? LoopOptions { get; set; } = null;
-
-		// Options when element has a condition
-		public ConditionalOptions? ConditionalOptions { get; set; } = null;
-
-		public void LoadImport(IElement importedElement)
-		{
-			foreach (var child in importedElement.Children) Children.Add(child);
-
-			foreach (var attr in importedElement.Attributes)
-			{
-				if (Attributes.Any(o => o.Attribute == attr.Attribute))
-					continue;
-
-				Attributes.Add(attr);
-			}
-		}
-
-		public string Accept(IElementVisitor<string> visitor)
+		public override string Accept(IElementVisitor<string> visitor)
 		{
 			return visitor.Visit(this);
-		}
-
-		public object Clone()
-		{
-			return new ImageElement
-			{
-				Attributes = Attributes,
-				Children = Children,
-				ConditionalOptions = ConditionalOptions,
-				ImportOptions = ImportOptions,
-				LoopOptions = LoopOptions,
-				Current = Current,
-			};
 		}
 	}
 }

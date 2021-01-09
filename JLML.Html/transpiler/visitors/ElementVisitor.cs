@@ -16,7 +16,7 @@ namespace JLML.Html.Visitors
 		private readonly ValueVisitor valueVisitor;
 		private readonly OptionVisitor optionVisitor;
 
-		public static BaseScript BaseScript { get; private set; }
+		public static JLMLDocument BaseScript { get; private set; }
 
 		private PageContext pageContext;
 		public ElementVisitor(PageContext pageContext)
@@ -24,21 +24,19 @@ namespace JLML.Html.Visitors
 			this.pageContext = pageContext;
 
 			valueVisitor = new ValueVisitor(pageContext);
-			optionVisitor = new OptionVisitor(pageContext);
+			optionVisitor = new OptionVisitor(pageContext, valueVisitor);
 		}
 
-		public string Visit(BaseScript value)
+		public string Visit(JLMLDocument value)
 		{
 			BaseScript = value;
 
-			var headers = value.Headers.ToDictionary(o => o.Attribute, e => e.Value);
-
-			IEnumerable<string> attrList = value.Attributes.Select(o => o.Accept(valueVisitor));
+			pageContext.AddRange(value.Attributes.Cast<HeaderValue>().ToDictionary(o => o.Attribute, e => e.Value));
 
 			// Get values that could only be attributes in html
 			IEnumerable<string> objList = ResolveChildElementsOptions(value.Children).Select(o => o.Accept(this));
 
-			return HtmlGenerator.CreateHtmlBase(headers, attrList, objList);
+			return HtmlGenerator.CreateHtmlBase(pageContext, objList);
 		}
 
 		public string Visit(Element value)
@@ -66,9 +64,9 @@ namespace JLML.Html.Visitors
 			IEnumerable<string> attrList = value.Attributes.Select(o => o.Accept(valueVisitor));
 
 			// Select element can only have options as children to all others are ignored
-			IEnumerable<string> objList =
-				ResolveChildElementsOptions(value.Children.Where(o => o.GetType() == typeof(OptionElement)))
-				.Cast<OptionElement>().Select(o => o.Accept(this)).ToList();
+			IEnumerable<string> objList = ResolveChildElementsOptions(
+				value.Children.Where(o => o is NamedElement nEl && nEl.Identifier.Equals("option", StringComparison.OrdinalIgnoreCase))
+			).Select(o => o.Accept(this)).ToList();
 
 			return HtmlGenerator.CreateHtmlTag("select", attrList, objList);
 		}
@@ -81,19 +79,6 @@ namespace JLML.Html.Visitors
 		public string Visit(InputElement value)
 		{
 			throw new System.NotImplementedException();
-		}
-
-		public string Visit(OptionElement value)
-		{
-			IEnumerable<string> attrList = value.Attributes.Select(o => o.Accept(valueVisitor));
-
-			// Get values that could only be attributes in html
-			IEnumerable<string> objList = ResolveChildElementsOptions(value.Children).Select(o => o.Accept(this));
-
-			var text = pageContext[value.Value.ToString()] ?? value.Current[value.Value.ToString()];
-			if(value.Value == null) value.Value = text;
-
-			return HtmlGenerator.CreateHtmlTag("option", attrList, objList);
 		}
 
 		/// <summary>
@@ -121,19 +106,19 @@ namespace JLML.Html.Visitors
 
 				if (element.LoopOptions is not null)
 				{
-					IElement loopElement = optionVisitor.Visit(element.LoopOptions);
-					var listValue = element.Parent[element.LoopOptions.ListRef] as IEnumerable<object>;
+					var listValue = element.Current[element.LoopOptions.ListRef] as IEnumerable<object>;
 					foreach (var item in listValue)
 					{
-						el
-						elementList.Add(loopElement.Clone() as IElement);
+						IElement loopElement = element.Clone() as IElement;
+						loopElement.Current[element.LoopOptions.ValueRef] = item;
+
+						elementList.Add(loopElement);
 					}
 				}
 
 				if (element.ConditionalOptions is not null)
 				{
 					var condition = optionVisitor.Visit(element.ConditionalOptions) as ConditionalOptions;
-					if(condition.Condition(BaseScript)) elementList.Add(element);
 				}
 			}
 

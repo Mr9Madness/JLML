@@ -5,7 +5,7 @@ namespace JLML.Visitors
 {
 	public interface IElementVisitor<T>
 	{
-		public T Visit(BaseScript value);
+		public T Visit(JLMLDocument value);
 
 		public T Visit(NamedElement value);
 
@@ -14,8 +14,6 @@ namespace JLML.Visitors
 		public T Visit(ImageElement value);
 
 		public T Visit(InputElement value);
-
-		public T Visit(OptionElement value);
 
 		public T Visit(Element value);
 	}

@@ -3,50 +3,40 @@ grammar JLML;
 @header { #pragma warning disable 3021 }
 
 // Parser
-jlml		: headers* element+;
+jlml		: headers? element+;
 
-headers		: DECLARE_STATEMENT | SET_STATEMENT;
+headers		: (setheader | assignheader)+;
+setheader	: SET PROPERTY_NAME STRING SEMICOLON?;
+assignheader: DECLARE IDENTIFIER STRING SEMICOLON?;
 
-element		: elementkey? OPEN_BRACE (element | pair)+ CLOSE_BRACE;
+element		: elementkey SEMICOLON | elementkey? OPEN_BRACE (pair | element)* CLOSE_BRACE;
 elementkey	: IDENTIFIER COLON with? loop? when?;
+
+with		: USING IDENTIFIER (FROM IDENTIFIER)?;
+loop		: FOR IDENTIFIER IN (PROPERTY_NAME | IDENTIFIER);
+when		: WHEN PROPERTY_NAME COMPARE_TOKENS (STRING | NUMBER | LITERAL | concat);
 
 pair		: key COLON value SEMICOLON?;
 key			: IDENTIFIER;
 value		: STRING
 			| PROPERTY_NAME
+			| IDENTIFIER
 			| NUMBER
 			| LITERAL
 			| concat
 			| list
-			| value math+
-			| whenthen;
+			| value math+;
 
 math		: op=ADDICTIVE_OPERATORS value
 			| op=MULTIPLICATIVE_OPERATORS value;
 
-loop		: 'for' IDENTIFIER 'in' PROPERTY_NAME;
-with		: 'using' STRING WITH_EXPRESSION?;
-when		: ('when' | 'if') PROPERTY_NAME COMPARE_TOKENS (USABLE_TOKENS | concat);
-whenthen	: ('when' | 'if') PROPERTY_NAME COMPARE_TOKENS USABLE_TOKENS 'then' value ('else' value)?;
+//whenthen	: WHEN PROPERTY_NAME COMPARE_TOKENS USABLE_TOKENS THEN value (ELSE value)?;
 
-concat		: '$' '(' (USABLE_TOKENS ','?)+ ')' | '(' ')';
-list		: '(' (USABLE_TOKENS ','?)+ ')' | '(' ')';
+list		: '(' ((STRING | NUMBER | LITERAL) ','?)+ ')' | '(' ')';
+concat		: DOLLAR_SIGN '(' ((STRING | NUMBER) ','?)+ ')' | '(' ')';
 
-// Lexer
-
-IDENTIFIER			: [a-zA-Z] ([a-zA-Z0-9_-])*;
-STRING				: '"' DOUBLE_QUOTE_CHAR* '"' | '\'' SINGLE_QUOTE_CHAR* '\'';
-NUMBER				: '-'? INT ('.' [0-9]+)? EXP?;
-LITERAL				: 'true' | 'false';
-
-USABLE_TOKENS		: IDENTIFIER | STRING | NUMBER | LITERAL;
-
-WITH_EXPRESSION		: 'with' '(' IDENTIFIER ')';
-DECLARE_STATEMENT	: 'declare' IDENTIFIER STRING;
-SET_STATEMENT		: 'set' PROPERTY_NAME STRING;
-
-PROPERTY_NAME		: IDENTIFIER ('.' IDENTIFIER)*;
-
+// Dropped lexer expressions
+// WITH_EXPRESSION		: 'with' '(' IDENTIFIER ')';
 // LAMBDA_EXPRESSION	: FUNCTION_SIGNATURE '=>' '{' '}' | FUNCTION_SIGNATURE '=>' STRING;
 
 // Lexer characters
@@ -57,6 +47,27 @@ SEMICOLON					: ';';
 COMPARE_TOKENS				: '<' | '>' | '<=' | '>=';
 ADDICTIVE_OPERATORS			: '+' | '-';
 MULTIPLICATIVE_OPERATORS	: '*' | '/' | '%';
+DOT                         : '.';
+DOLLAR_SIGN                 : '$';
+
+// Lexer words
+SET		: 'set';
+DECLARE	: 'declare';
+USING	: 'using';
+FOR		: 'for';
+WHEN	: 'when' | 'if';
+IN		: 'in';
+FROM	: 'from';
+THEN	: 'then';
+ELSE	: 'else';
+
+// Lexer
+IDENTIFIER			: [a-zA-Z] ([a-zA-Z0-9_-])*;
+STRING				: '"' DOUBLE_QUOTE_CHAR* '"' | '\'' SINGLE_QUOTE_CHAR* '\'';
+NUMBER				: '-'? INT ('.' [0-9]+)? EXP?;
+LITERAL				: 'true' | 'false';
+
+PROPERTY_NAME		: IDENTIFIER (DOT IDENTIFIER)*;
 
 // Lexer fragments
 fragment DOUBLE_QUOTE_CHAR	: ~["\\\r\n] | ESCAPE_SEQUENCE;
@@ -79,5 +90,5 @@ fragment EXP				: [Ee] SYMBOL INT;
 fragment NEWLINE			: '\r\n' | [\r\n\u2028\u2029];
 
 
-LINE_COMMENT	: '//' ~[\r\n]* -> channel(HIDDEN);
-WS				: [ \t\n\r] + -> skip;
+LINE_COMMENT	: '//' ~[\r\n]* -> skip;
+WS				: [ \t\n\r]+ -> skip;

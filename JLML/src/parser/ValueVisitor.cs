@@ -19,7 +19,7 @@ namespace JLML.Parsers
 		public override IValue VisitPair([NotNull] JLMLParser.PairContext context)
 		{
 			IValue datavalue = context.value().Accept(this);
-			datavalue.Attribute = context.key().GetText();
+			datavalue.Attribute = context.key().GetTextValue();
 
 			return datavalue;
 		}
@@ -27,23 +27,25 @@ namespace JLML.Parsers
 		public override IValue VisitValue([NotNull] JLMLParser.ValueContext context)
 		{
 			ITerminalNode @string = context.STRING();
-			ITerminalNode identif = context.PROPERTY_NAME();
+			ITerminalNode identif = context.IDENTIFIER();
+			ITerminalNode propert = context.PROPERTY_NAME();
 			ITerminalNode integer = context.NUMBER();
 			ITerminalNode literal = context.LITERAL();
 
 			if(@string != null) return GetDataValueFromNode(@string, typeof(string));
 			if(integer != null) return GetDataValueFromNode(integer, typeof(int));
 			if(literal != null) return GetDataValueFromNode(literal, typeof(bool));
-			if(identif != null) return new VariableValue { Value = identif.GetText() };
+			if(identif != null) return new VariableValue { Value = identif.GetTextValue() };
+			if(propert != null) return new VariableValue { Value = propert.GetTextValue() };
 
-			return new DataValue { DataType = typeof(string), Value = context.GetText() };
+			return new DataValue { DataType = typeof(string), Value = context.GetTextValue() };
 		}
 
 		public override ConcatValue VisitConcat([NotNull] JLMLParser.ConcatContext context)
 		{
 			return new ConcatValue
 			{
-				Values = context.USABLE_TOKENS().Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
+				Values = context.children.Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
 			};
 		}
 
@@ -51,7 +53,7 @@ namespace JLML.Parsers
 		{
 			return new ListValue
 			{
-				Values = context.USABLE_TOKENS().Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
+				Values = context.children.Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
 			};
 		}
 
@@ -63,48 +65,59 @@ namespace JLML.Parsers
 			//var child = context.GetChild(1).GetChild(1);
 
 			return new CalculatedValue {
-				// Operator = new List<char>(addOp.GetText().Split(' ')),
+				// Operator = new List<char>(addOp.GetTextValue().Split(' ')),
 				// Values = ,
 			};
 		}
 
-		public override ConditionalValue VisitWhenthen([NotNull] JLMLParser.WhenthenContext context)
+		// public override ConditionalValue VisitWhenthen([NotNull] JLMLParser.WhenthenContext context)
+		// {
+		// 	string property = context.PROPERTY_NAME().GetTextValue();
+		// 	string compareTokens = context.COMPARE_TOKENS().GetTextValue();
+		// 	string comparableToken = context.USABLE_TOKENS().GetTextValue();
+
+		// 	var values = context.value();
+		// 	var value1 = values[0].GetTextValue();
+
+		// 	string value2 = property;
+		// 	if(values.Length > 1)
+		// 		value2 = values[1].GetTextValue();
+
+		// 	string condition = $"page => {property} {compareTokens} {comparableToken} ? {value1} : {value2}";
+		// 	return new ConditionalValue
+		// 	{
+		// 		Condition = CSharpScript.EvaluateAsync<Func<JLMLDocument, object>>(condition).GetAwaiter().GetResult()
+		// 	};
+		// }
+
+		public override HeaderValue VisitAssignheader([NotNull] JLMLParser.AssignheaderContext context)
 		{
-			string property = context.PROPERTY_NAME().GetText();
-			string compareTokens = context.COMPARE_TOKENS().GetText();
-			string comparableToken = context.USABLE_TOKENS().GetText();
-
-			var values = context.value();
-			var value1 = values[0].GetText();
-
-			string value2 = property;
-			if(values.Length > 1)
-				value2 = values[1].GetText();
-
-			string condition = $"page => {property} {compareTokens} {comparableToken} ? {value1} : {value2}";
-			return new ConditionalValue
+			var attrName = context.IDENTIFIER();
+			var value = context.STRING();
+			return new HeaderValue
 			{
-				Condition = CSharpScript.EvaluateAsync<Func<BaseScript, object>>(condition).GetAwaiter().GetResult()
+				Type = HeaderValue.HeaderType.Declare,
+				Attribute = attrName.GetTextValue(),
+				Value = value.GetTextValue(),
 			};
 		}
 
-		private DataValue GetDataValueFromNode(ITerminalNode node, [NotNull] Type type)
+		public override HeaderValue VisitSetheader([NotNull] JLMLParser.SetheaderContext context)
 		{
-			var value = Convert.ChangeType(node.GetText(), type);
-			return new DataValue { DataType = type, Value = value };
+			var attrName = context.PROPERTY_NAME();
+			var value = context.STRING();
+			return new HeaderValue
+			{
+				Type = HeaderValue.HeaderType.Set,
+				Attribute = attrName.GetTextValue(),
+				Value = value.GetTextValue(),
+			};
 		}
 
-		private Type GetValueTypeFromString(string value)
+		public static DataValue GetDataValueFromNode(ITerminalNode node, [NotNull] Type type)
 		{
-			if(int.TryParse(value, out _)) return typeof(int);
-			else if(Double.TryParse(value, out _)) return typeof(double);
-
-			else if(DateTime.TryParse(value, out _)) return typeof(DateTime);
-
-			else if(char.TryParse(value, out _)) return typeof(char);
-
-			else if(!value.Contains('"')) return typeof(object);
-			else return typeof(string);
+			var value = Convert.ChangeType(node.GetTextValue(), type);
+			return new DataValue { DataType = type, Value = value };
 		}
 	}
 }

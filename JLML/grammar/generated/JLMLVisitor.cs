@@ -46,6 +46,18 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitHeaders([NotNull] JLMLParser.HeadersContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.setheader"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSetheader([NotNull] JLMLParser.SetheaderContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.assignheader"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssignheader([NotNull] JLMLParser.AssignheaderContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="JLMLParser.element"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -57,6 +69,24 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitElementkey([NotNull] JLMLParser.ElementkeyContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.with"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWith([NotNull] JLMLParser.WithContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.loop"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLoop([NotNull] JLMLParser.LoopContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="JLMLParser.when"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWhen([NotNull] JLMLParser.WhenContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="JLMLParser.pair"/>.
 	/// </summary>
@@ -82,40 +112,16 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitMath([NotNull] JLMLParser.MathContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="JLMLParser.loop"/>.
+	/// Visit a parse tree produced by <see cref="JLMLParser.list"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitLoop([NotNull] JLMLParser.LoopContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="JLMLParser.with"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitWith([NotNull] JLMLParser.WithContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="JLMLParser.when"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitWhen([NotNull] JLMLParser.WhenContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="JLMLParser.whenthen"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitWhenthen([NotNull] JLMLParser.WhenthenContext context);
+	Result VisitList([NotNull] JLMLParser.ListContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="JLMLParser.concat"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitConcat([NotNull] JLMLParser.ConcatContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="JLMLParser.list"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitList([NotNull] JLMLParser.ListContext context);
 }
 } // namespace JLML.Generated

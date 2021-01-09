@@ -4,6 +4,6 @@ namespace JLML
 {
     public interface IScriptable
     {
-        public string ToScript(BaseScript value);
+        public string ToScript(JLMLDocument value);
     }
 }

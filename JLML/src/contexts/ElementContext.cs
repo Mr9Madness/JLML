@@ -8,13 +8,13 @@ namespace JLML.Contexts
 	public class ElementContext
 	{
 #nullable enable
-		private ElementContext? parentContext;
+		public readonly ElementContext? Parent;
 		private Dictionary<string, IValue> attr;
 
 		public ElementContext(IElement element, IElement? parent = null)
 		{
 			attr = element.Attributes.ToDictionary(k => k.Attribute);
-			parentContext = parent == null ? null : parent.Current;
+			Parent = parent == null ? null : parent.Current;
 		}
 
 		public object? this[string name]
@@ -26,19 +26,17 @@ namespace JLML.Contexts
 					return dataValue.Value;
 				else if (value is ListValue listValue)
 					return listValue.Values;
-				else if(value is null && parentContext is not null)
-					return parentContext[name];
+				else if(value is null && Parent is not null)
+					return Parent[name];
 
 				return null;
 			}
-			// set
-			// {
-			// 	var prop = typeof(Page).GetProperty(name, System.Reflection.BindingFlags.IgnoreCase);
-			// 	var val = prop.GetValue(page);
-
-			// 	if (val == null) return;
-			// 	prop.SetValue(page, value);
-			// }
+			set
+			{
+				if(attr.ContainsKey(name)) return;
+				if(value is not IValue valueObject) return;
+				attr[name] = valueObject;
+			}
 		}
 	}
 }

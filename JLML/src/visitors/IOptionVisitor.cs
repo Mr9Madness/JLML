@@ -7,7 +7,5 @@ namespace JLML.Visitors
 		public T Visit(ConditionalOptions value);
 
 		public T Visit(ImportOptions value);
-
-		public T Visit(LoopOptions value);
 	}
 }

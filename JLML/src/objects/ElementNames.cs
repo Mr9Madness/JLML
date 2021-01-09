@@ -5,6 +5,5 @@ namespace JLML.Objects
 		Select,
 		Input,
 		Image,
-		Option,
 	}
 }

@@ -20,7 +20,7 @@ namespace JLML.Html
 
 			string fileText = await File.ReadAllTextAsync(filePath, Encoding.UTF8, token);
 
-			BaseScript script = JLMLDocument.Load(fileText, token);
+			JLMLDocument script = JLMLDocumentLoader.Load(fileText);
 
 			HtmlTranspiler transpiler = new HtmlTranspiler();
 			string contents = transpiler.ToScript(script);
