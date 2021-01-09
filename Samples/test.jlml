@@ -1,12 +1,16 @@
 set page.title "jlml test page";
+set page.style "";
 
-declare comp "components/";
-declare nav "nav";
-declare RowInput "comp.input";
-declare jlml "jlml.github.io/pack/";
+declare comp "samples/components/";
+
+declare firstnav "samples/nav";
+declare jlml "jlml.github.io/pack.jlml";
+declare jlmlother "jlml.github.io/pack-";
 
 {
-	nav: using nav;
+	nav: using firstnav;
+	nav: using nav from jlml;
+	nav: using nav from jlmlother;
 	tags: "container";
 
 	image: when page.width < 900
@@ -17,12 +21,12 @@ declare jlml "jlml.github.io/pack/";
 	}
 
 	form: {
-		tags: when page.width > 900 then "container" else "container-fluid";
+//		tags: when page.width > 900 then "container" else "container-fluid";
 
 		input:
 		{
 			tags: "form-control";
-			type: Text;
+			type: "text";
 			name: "testInput";
 			placeholder: "Placeholder Value";
 			text: "Default Value";
@@ -48,23 +52,22 @@ declare jlml "jlml.github.io/pack/";
 
 			option: for value in values {
 				text: value;
-			};
+			}
 //			option: for value in othervalues
 //				when value == $("show ", value) {
 //				text: value;
 //			}
 		}
-		input: using jlml.RowInput with(input)
+		input: using input from comp
 		{
 			tags: $("form-row", "horizontal");
 			name: "testInput";
 			text: "imported input";
-		};
+		}
 		button: {
 			type: "submit";
 			tags: "btn btn-primary";
 			text: "Submit";
 		}
 	}
-
 }
