@@ -1,4 +1,4 @@
-{
+nav: {
 	tags: "navbar";
 	role: "navigation";
 	aria-label: "main navigation";
