@@ -3,12 +3,10 @@ set page.style "";
 
 declare comp "https://mr9madness.github.io/JLML/samples/components/";
 
-declare firstnav "https://mr9madness.github.io/JLML/samples/nav";
 declare jlml "https://mr9madness.github.io/JLML/samples/pack.jlml";
 declare jlmlloose "https://mr9madness.github.io/JLML/samples/loose/";
 
 {
-	nav: using firstnav;
 	nav: using nav from jlml;
 	nav: using nav from jlmlloose;
 	tags: "container";
@@ -46,7 +44,9 @@ declare jlmlloose "https://mr9madness.github.io/JLML/samples/loose/";
 			values: ("first option", "second option", "show secret option 1", "show secret option 2");
 //			othervalues: ("secret option 1", "secret option 2");
 
-			option: { text: "top action"; }
+			option: {
+				text: "top action";
+			}
 
 			option: for value in values {
 				text: value;
