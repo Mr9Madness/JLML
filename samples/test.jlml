@@ -11,10 +11,18 @@ declare jlmlloose "https://mr9madness.github.io/JLML/samples/loose/";
 	nav: using nav from jlmlloose;
 	tags: "container";
 
-	image: when page.width < 900
-	{
+	image: {
+		source: {
+			src: "https://mr9madness.github.io/JLML/samples/img/img_food.jpg";
+		}
+		source: when page.width < 600 {
+			src: "https://mr9madness.github.io/JLML/samples/img/img_girl.jpg";
+		}
+		source: when page.width < 1000 {
+			src: "https://mr9madness.github.io/JLML/samples/img/img_car.jpg";
+		}
 		description: {
-			text: "Only shown when screen is smaller then 900 pixels"
+			text: "Shows a car when on a screen thats under 1000 pixels, a girl when its under 600, and otherwise food";
 		}
 	}
 
