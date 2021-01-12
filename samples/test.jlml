@@ -40,7 +40,7 @@ declare jlmlloose "https://mr9madness.github.io/JLML/samples/loose/";
 			label:
 			{
 				tags: "col-form";
-				text: "Text";
+				text: parent.text;
 			}
 
 			description: {
@@ -53,15 +53,15 @@ declare jlmlloose "https://mr9madness.github.io/JLML/samples/loose/";
 //			othervalues: ("secret option 1", "secret option 2");
 
 			option: {
-				text: "top action";
+				value: "top action";
 			}
 
 			option: for value in values {
-				text: value;
+				value: value;
 			}
 //			option: for value in othervalues
 //				when value == $("show ", value) {
-//				text: value;
+//				value: value;
 //			}
 		}
 		input: using input from comp
