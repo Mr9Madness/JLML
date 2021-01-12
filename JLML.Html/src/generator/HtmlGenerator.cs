@@ -16,18 +16,18 @@ namespace JLML.Html.Generator
 			StringBuilder builder = new StringBuilder();
 
 			builder.Append("<html>");
-			builder.AppendLine("<head>");
+			builder.Append("<head>");
 
 			var title = pageOptions["title"];
 			if(title != null)
-				builder.AppendLine($"<title>{title}</title>");
+				builder.Append($"<title>{title}</title>");
 
-			builder.AppendLine("</head>");
-			builder.AppendLine($"<body>");
+			builder.Append("</head>");
+			builder.Append($"<body>");
 
-			foreach (var child in childObjs) builder.AppendLine(child);
+			foreach (var child in childObjs) builder.Append(child);
 
-			builder.AppendLine("</body>");
+			builder.Append("</body>");
 			builder.Append("</html>");
 
 			return builder.ToString();
@@ -38,31 +38,45 @@ namespace JLML.Html.Generator
 		/// In format &lt;{<paramref name="id" />} {<paramref name="attrs" />}&gt; if no elements/objects provided.
 		/// Otherwise in normal html format &lt;{<paramref name="id" />} {<paramref name="attrs" />}&gt;&lt;/{<paramref name="id" />}&gt;
 		/// </summary>
-		public static string CreateHtmlTag(string id, IEnumerable<string> attrs, IEnumerable<string> childObjs)
+		public static string CreateHtmlTag(string id, IEnumerable<string> text, IEnumerable<string> attrs, IEnumerable<string> childObjs)
 		{
 			StringBuilder builder = new StringBuilder();
 
-			builder.Append($@"<{id} {string.Join(' ', attrs)}");
+			string htmlId = GetHtmlElementNameFromId(id);
 
-			if (childObjs.Any()) builder.Append(">" + Environment.NewLine);
+			builder.Append($@"<{htmlId} {string.Join(' ', attrs)}");
+
+			if (text.Any() || childObjs.Any()) builder.Append(">");
 			else
 			{
 				builder.Append(" />");
 				return builder.ToString();
 			}
 
-			foreach (var item in childObjs) builder.AppendLine(item);
+			foreach (var item in text) builder.Append(item);
+			foreach (var item in childObjs) builder.Append(item);
 
-			builder.Append($"</{id}>");
+			builder.Append($"</{htmlId}>");
 
 			return builder.ToString();
+		}
 
+		public static string CreateHtmlAttr(string name, string value)
+		{
+			if(name == "text") return value;
+			return $@"{GetHtmlAttrFromId(name)}=""{value}""";
 		}
 
 		public static string GetHtmlAttrFromId(string identifier) => identifier switch
 		{
 			"tags" => "class",
-			"text" => "content",
+			_ => identifier,
+		};
+
+		public static string GetHtmlElementNameFromId(string identifier) => identifier switch
+		{
+			"link" => "a",
+			"description" => "figcaption",
 			_ => identifier,
 		};
 	}

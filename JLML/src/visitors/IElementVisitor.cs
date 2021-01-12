@@ -13,8 +13,6 @@ namespace JLML.Visitors
 
 		public T Visit(ImageElement value);
 
-		public T Visit(InputElement value);
-
 		public T Visit(Element value);
 	}
 }

@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/JLML.Html/JLML.Html.csproj",
+                "${workspaceFolder}/JLML.Tool/JLML.Tool.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,8 +19,8 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/JLML.Html/JLML.Html.csproj",
-                "/property:GenerateFullPaths=true",
+				"${workspaceFolder}/JLML.Tool/JLML.Tool.csproj",
+				"/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
@@ -32,8 +32,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/JLML.Html/JLML.Html.csproj",
-                "/property:GenerateFullPaths=true",
+				"${workspaceFolder}/JLML.Tool/JLML.Tool.csproj",
+				"/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"

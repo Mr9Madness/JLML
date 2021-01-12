@@ -11,8 +11,17 @@ namespace JLML
 			Generated.JLMLLexer lexer = new Generated.JLMLLexer(new AntlrInputStream(fileText));
 			Generated.JLMLParser parser = new Generated.JLMLParser(new CommonTokenStream(lexer));
 
-			ElementVisitor visitor = new ElementVisitor();
-			return (JLMLDocument)parser.jlml().Accept(visitor);
+			parser.RemoveErrorListeners();
+			parser.AddErrorListener(new JLMLErrorListener());
+
+			try {
+				ElementVisitor visitor = new ElementVisitor();
+				return (JLMLDocument)parser.jlml().Accept(visitor);
+			}
+			catch(RecognitionException rex)
+			{
+				throw rex.GetBaseException();
+			}
 		}
 	}
 }

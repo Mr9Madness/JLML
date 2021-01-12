@@ -54,19 +54,21 @@ namespace JLML.Parsers
 		public override IElement VisitElement([NotNull] JLMLParser.ElementContext context)
 		{
 			IElement element = GetNamedElementOrDefault(context.elementkey());
-			element.Current = new ElementContext(element, currentElement);
 
 			JLMLParser.PairContext[] pairContext = context.pair();
 			for (int i = 0; i < pairContext.Length; i++)
-				element.Attributes.Add(pairContext[i].Accept(valueVisitor));
+			{
+				var value = pairContext[i].Accept(valueVisitor);
+				value.Element = element;
+				element.Attributes.Add(value);
+			}
+
+			element.Current = new ElementContext(element, currentElement);
 
 			currentElement = element;
 			JLMLParser.ElementContext[] elementContext = context.element();
 			for (int i = 0; i < elementContext.Length; i++)
-			{
-				var child = elementContext[i].Accept(this);
-				element.Children.Add(child);
-			}
+				element.Children.Add(elementContext[i].Accept(this));
 
 			return element;
 		}
@@ -84,7 +86,13 @@ namespace JLML.Parsers
 			if(whenContext != null) when = whenContext.Accept(optionVisitor) as ConditionalOptions;
 			if(loopContext != null) loop = loopContext.Accept(optionVisitor) as LoopOptions;
 
-			return GetNamedElement(context.IDENTIFIER().GetTextValue(), with, when, loop);
+			var element = GetNamedElement(context.IDENTIFIER().GetTextValue(), with, when, loop);
+
+			if(withContext != null) element.ImportOptions.Element = element;
+			if(whenContext != null) element.ConditionalOptions.Element = element;
+			if(loopContext != null) element.LoopOptions.Element = element;
+
+			return element;
 		}
 
 		public override IElement VisitErrorNode(IErrorNode node)
@@ -108,7 +116,7 @@ namespace JLML.Parsers
 			return key;
 		}
 
-		private IElement GetNamedElement(string name, [Nullable] ImportOptions with, [Nullable] ConditionalOptions when, [Nullable] LoopOptions loop)
+		private NamedElement GetNamedElement(string name, [Nullable] ImportOptions with, [Nullable] ConditionalOptions when, [Nullable] LoopOptions loop)
 		{
 			if(Enum.TryParse<ElementName>(name, true, out ElementName elementName))
 			{
@@ -116,7 +124,6 @@ namespace JLML.Parsers
 				{
 					ElementName.Select => new SelectElement { ImportOptions = with, ConditionalOptions = when, LoopOptions = loop },
 					ElementName.Image => new ImageElement { ImportOptions = with, ConditionalOptions = when, LoopOptions = loop },
-					ElementName.Input => new InputElement { ImportOptions = with, ConditionalOptions = when, LoopOptions = loop },
 					_ => throw new NotSupportedException($"{name} element is not supported"),
 				};
 			}

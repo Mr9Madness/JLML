@@ -10,7 +10,7 @@ namespace JLML.Contexts
 		{
 			props = new Dictionary<string, object>
 			{
-				{ "Width", 1920 }
+				{ "width", 1920 }
 			};
 		}
 
@@ -18,15 +18,21 @@ namespace JLML.Contexts
 		public object? this[string name]
 		{
 			get {
-				if(!props.ContainsKey(name)) return null;
-				return props.GetValueOrDefault(name);
+				// All page properties have to be lower case to avoid null returns
+				string lowerName = name.ToLower();
+
+				if(!props.ContainsKey(lowerName)) return null;
+				return props.GetValueOrDefault(lowerName);
 			}
 			set {
-				if (!props.ContainsKey(name)) return;
-				var val = props.GetValueOrDefault(name);
+				// All page properties have to be lower case to avoid null returns
+				string lowerName = name.ToLower();
+
+				if (!props.ContainsKey(lowerName)) return;
+				var val = props.GetValueOrDefault(lowerName);
 
 				if(val == null) return;
-				props[name] = value?.ToString();
+				props[lowerName] = value?.ToString();
 			}
 		}
 

@@ -9,6 +9,7 @@ using JLML.Objects.Options;
 using JLML.Objects.Values;
 using JLML.Visitors;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace JLML.Html.Visitors
 {
@@ -60,26 +61,46 @@ namespace JLML.Html.Visitors
 					if (!string.IsNullOrWhiteSpace(resource))
 						importText = resource;
 				}
-				catch(System.InvalidOperationException) { }
+				catch(Exception ex) { }
 			}
 
-			JLMLDocument document = JLMLDocumentLoader.Load(importText);
+			try {
+				JLMLDocument document = JLMLDocumentLoader.Load(importText);
+				if(!takeCertainElement) return document.FirstOrDefault();
+				return document.FirstOrDefault(options.ElementName);
+			}
+			catch(System.Exception ex)
+			{
+				System.Console.WriteLine(ex.Message);
+			}
 
-			if(!takeCertainElement) return document;
-			return document.FirstOrDefault(options.ElementName);
+			return null;
 		}
 
 		public IElement Visit(ConditionalOptions options)
 		{
+			Type objectType = null;
 			string compareToString = string.Empty;
 			if(options.CompareToTokens is ConcatValue concat)
+			{
+				objectType = typeof(string);
 				compareToString = valueVisitor.Visit(concat);
+			}
 			else if(options.CompareToTokens is DataValue data)
-				compareToString = valueVisitor.Visit(data);
+			{
+				objectType = data.DataType;
+				compareToString = data.Value.ToString();
+			}
 
-			string conditionString = $"(page, parent) => {options.Property} {options.CompareTokens} {compareToString}";
+			string castedProperty =
+				objectType == typeof(int) ? $"(int){options.Property}"
+				: objectType == typeof(bool) ? $"(bool){options.Property}"
+				: $"{options.Property}.ToString()";
 
-			var condition = CSharpScript.EvaluateAsync<Func<PageContext, ElementContext, bool>>(conditionString).GetAwaiter().GetResult();
+			string conditionString = $"(page, parent) => {castedProperty} {options.CompareTokens} {compareToString}";
+
+			var scriptOptions = ScriptOptions.Default.AddReferences(typeof(PageContext).Assembly).AddImports("System", "JLML.Contexts");
+			var condition = CSharpScript.EvaluateAsync<Func<PageContext, ElementContext, bool>>(conditionString, scriptOptions).GetAwaiter().GetResult();
 
 			if(condition(pageContext, options.Element.Current))
 				return options.Element;

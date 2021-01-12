@@ -18,7 +18,16 @@ namespace JLML.Parsers
 	{
 		public override IValue VisitPair([NotNull] JLMLParser.PairContext context)
 		{
-			IValue datavalue = context.value().Accept(this);
+			IValue datavalue;
+			var value = context.value();
+
+			var list = value.list();
+			var concat = value.concat();
+
+			if(list != null) datavalue = list.Accept(this);
+			else if(concat != null) datavalue = concat.Accept(this);
+			else datavalue = value.Accept(this);
+
 			datavalue.Attribute = context.key().GetTextValue();
 
 			return datavalue;
@@ -38,22 +47,25 @@ namespace JLML.Parsers
 			if(identif != null) return new VariableValue { Value = identif.GetTextValue() };
 			if(propert != null) return new VariableValue { Value = propert.GetTextValue() };
 
-			return new DataValue { DataType = typeof(string), Value = context.GetTextValue() };
+			return context.Accept(this);
 		}
 
 		public override ConcatValue VisitConcat([NotNull] JLMLParser.ConcatContext context)
 		{
+			var children = context.children.Skip(2).Take(context.ChildCount - 3).Where(o => o.GetText() != ",");
+
 			return new ConcatValue
 			{
-				Values = context.children.Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
+				Values = children.Select(o => o.GetTextValue() as object).ToList(),
 			};
 		}
 
 		public override ListValue VisitList([NotNull] JLMLParser.ListContext context)
 		{
+			var children = context.children.Skip(1).Take(context.ChildCount - 2).Where(o => o.GetText() != ",");
 			return new ListValue
 			{
-				Values = context.children.Select(o => o.Accept(this)).Cast<DataValue>().ToList(),
+				Values = children.Select(o => o.GetTextValue() as object).ToList(),
 			};
 		}
 

@@ -35,6 +35,8 @@ namespace JLML.Objects.Elements
 
 		public virtual void LoadImport(IElement importedElement)
 		{
+			if(importedElement == null) return;
+
 			foreach (var child in importedElement.Children) Children.Add(child);
 
 			foreach (var attr in importedElement.Attributes)
@@ -54,16 +56,23 @@ namespace JLML.Objects.Elements
 
 		public virtual object Clone()
 		{
-			return new NamedElement
+			var element = new NamedElement
 			{
 				Identifier = Identifier,
-				Attributes = Attributes,
-				Children = Children,
+				Attributes = new List<IValue>(Attributes),
+				Children = new List<IElement>(Children),
 				ConditionalOptions = ConditionalOptions,
 				ImportOptions = ImportOptions,
 				LoopOptions = LoopOptions,
-				Current = Current,
+				Current = new ElementContext(Current),
 			};
+
+			foreach (var item in element.Attributes)
+			{
+				item.Element = element;
+			}
+
+			return element;
 		}
 	}
 }

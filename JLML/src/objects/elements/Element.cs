@@ -27,9 +27,9 @@ namespace JLML.Objects.Elements
 		{
 			return new Element
 			{
-				Attributes = Attributes,
-				Children = Children,
-				Current = Current,
+				Attributes = new List<IValue>(Attributes),
+				Children = new List<IElement>(Children),
+				Current = new ElementContext(Current),
 			};
 		}
 	}

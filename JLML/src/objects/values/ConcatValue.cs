@@ -10,7 +10,7 @@ namespace JLML.Objects.Values
 
 		public IElement Element { get; set; }
 
-		public List<DataValue> Values { get; init; }
+		public List<object> Values { get; init; }
 
 		public string Accept(IValueVisitor<string> visitor)
 		{

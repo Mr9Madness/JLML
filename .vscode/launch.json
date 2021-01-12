@@ -9,9 +9,9 @@
 			"type": "coreclr",
 			"request": "launch",
 			"preLaunchTask": "build",
-			"program": "${workspaceFolder}/JLML.Html/bin/Debug/net5.0/JLML.Html.dll",
+			"program": "${workspaceFolder}/JLML.Tool/bin/Debug/net5.0/JLML.Tool.dll",
 			"args": [],
-			"cwd": "${workspaceFolder}/JLML.Html",
+			"cwd": "${workspaceFolder}/JLML.Tool",
 			"console": "internalConsole",
 			"stopAtEntry": false
 		},

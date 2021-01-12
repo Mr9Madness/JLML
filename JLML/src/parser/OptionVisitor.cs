@@ -67,8 +67,8 @@ namespace JLML.Parsers
 
 			return new LoopOptions
 			{
-				ListRef = loopIdentifier.GetTextValue(),
-				ValueRef = loopProperty.GetTextValue(),
+				ListRef = loopProperty.GetTextValue(),
+				ValueRef = loopIdentifier.GetTextValue(),
 			};
 		}
 	}

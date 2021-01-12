@@ -9,33 +9,52 @@ namespace JLML.Contexts
 	{
 #nullable enable
 		public readonly ElementContext? Parent;
-		private Dictionary<string, IValue> attr;
+		public readonly Dictionary<string, IValue> Attr;
 
 		public ElementContext(IElement element, IElement? parent = null)
 		{
-			attr = element.Attributes.ToDictionary(k => k.Attribute);
+			Attr = element.Attributes.ToDictionary(k => k.Attribute);
 			Parent = parent == null ? null : parent.Current;
+		}
+
+		public ElementContext(ElementContext context)
+		{
+			Parent = context.Parent;
+			Attr = new Dictionary<string, IValue>(context.Attr);
 		}
 
 		public object? this[string name]
 		{
 			get
 			{
-				IValue value = attr[name];
+				ElementContext context = this;
+
+				if(name.Contains("."))
+				{
+					string[] nameParts = name.Split(".");
+					for (int i = 0; i < nameParts.Length - 1; i++)
+					{
+						if(nameParts[i] == "parent")
+							context = context.Parent;
+					}
+					name = nameParts[^1];
+				}
+				if(context == null) return null;
+
+				IValue? value = context.Attr.GetValueOrDefault(name);
 				if (value is DataValue dataValue)
 					return dataValue.Value;
 				else if (value is ListValue listValue)
 					return listValue.Values;
 				else if(value is null && Parent is not null)
-					return Parent[name];
+					return context.Parent[name];
 
 				return null;
 			}
 			set
 			{
-				if(attr.ContainsKey(name)) return;
 				if(value is not IValue valueObject) return;
-				attr[name] = valueObject;
+				Attr[name] = valueObject;
 			}
 		}
 	}
