@@ -7,18 +7,13 @@ declare images "jlml.github.io/images/";
     tags: "container";
 
     // Value with an using option
-    nav: using jlml.nav;
+    nav: using nav from page.jlml;
 
     image: if page.width < 900
     {
-        src: (images, "placeholder-600x400");
+        src: $(page.images, "placeholder-600x400");
         description: {
             text: "Only shown when screen is smaller then 900 pixels"
         }
-    }
-
-    {
-        text: "this always has 1/3 of the width of the page wide";
-        width: page.width / 3;
     }
 }
