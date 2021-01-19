@@ -8,9 +8,12 @@ using JLML.Visitors;
 
 namespace JLML.Html.Visitors
 {
+	/// <summary>
+	/// Visits values and translates it into html for elements to use
+	/// </summary>
 	public class ValueVisitor : IValueVisitor<string>
 	{
-		private PageContext pageContext;
+		private readonly PageContext pageContext;
 		public ValueVisitor(PageContext pageContext)
 		{
 			this.pageContext = pageContext;

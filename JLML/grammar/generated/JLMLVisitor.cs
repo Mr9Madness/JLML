@@ -106,12 +106,6 @@ public interface IJLMLVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitValue([NotNull] JLMLParser.ValueContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="JLMLParser.math"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitMath([NotNull] JLMLParser.MathContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="JLMLParser.list"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

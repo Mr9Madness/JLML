@@ -13,7 +13,7 @@ namespace JLML.Parsers
 {
 	public class OptionVisitor : Generated.JLMLBaseVisitor<IOptions>
 	{
-		private ValueVisitor valueVisitor = new ValueVisitor();
+		private readonly ValueVisitor valueVisitor = new();
 		public override ConditionalOptions VisitWhen([NotNull] JLMLParser.WhenContext context)
 		{
 			string property = context.PROPERTY_NAME().GetTextValue();
@@ -28,12 +28,11 @@ namespace JLML.Parsers
 			if (context.NUMBER() is not null)	codedValue = ValueVisitor.GetDataValueFromNode(context.NUMBER(), typeof(int));
 			if (context.LITERAL() is not null)	codedValue = ValueVisitor.GetDataValueFromNode(context.LITERAL(), typeof(bool));
 
-			var concatValue = context.concat()?.Accept(valueVisitor) as ConcatValue;
 
-			IValue comparableTokens = null;
-			if(concatValue != null) comparableTokens = concatValue;
+			IValue comparableTokens;
+			if(context.concat()?.Accept(valueVisitor) is ConcatValue concatValue) comparableTokens = concatValue;
 			else if(codedValue != null) comparableTokens = codedValue;
-			else throw new System.ArgumentNullException(nameof(comparableTokens), "No values to compare to");
+			else throw new ArgumentNullException(nameof(comparableTokens), "No values to compare to");
 
 			return new ConditionalOptions
 			{

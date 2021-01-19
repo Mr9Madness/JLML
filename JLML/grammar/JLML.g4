@@ -24,12 +24,10 @@ value		: STRING
 			| NUMBER
 			| LITERAL
 			| concat
-			| list
-			| value math+;
+			| list;
 
-math		: op=ADDICTIVE_OPERATORS value
-			| op=MULTIPLICATIVE_OPERATORS value;
-
+//math		: op=ADDICTIVE_OPERATORS value
+//			| op=MULTIPLICATIVE_OPERATORS value;
 //whenthen	: WHEN PROPERTY_NAME COMPARE_TOKENS USABLE_TOKENS THEN value (ELSE value)?;
 
 list		: '(' ((STRING | NUMBER | LITERAL) ','?)+ ')' | '(' ')';

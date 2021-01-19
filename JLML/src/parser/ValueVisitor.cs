@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using JLML.Generated;
-using JLML.Objects;
 using JLML.Objects.Values;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
 
 namespace JLML.Parsers
 {
@@ -68,39 +65,6 @@ namespace JLML.Parsers
 				Values = children.Select(o => o.GetTextValue() as object).ToList(),
 			};
 		}
-
-		public override CalculatedValue VisitMath([NotNull] JLMLParser.MathContext context)
-		{
-			var op = context.op;
-			JLMLParser.ValueContext value = context.value();
-
-			//var child = context.GetChild(1).GetChild(1);
-
-			return new CalculatedValue {
-				// Operator = new List<char>(addOp.GetTextValue().Split(' ')),
-				// Values = ,
-			};
-		}
-
-		// public override ConditionalValue VisitWhenthen([NotNull] JLMLParser.WhenthenContext context)
-		// {
-		// 	string property = context.PROPERTY_NAME().GetTextValue();
-		// 	string compareTokens = context.COMPARE_TOKENS().GetTextValue();
-		// 	string comparableToken = context.USABLE_TOKENS().GetTextValue();
-
-		// 	var values = context.value();
-		// 	var value1 = values[0].GetTextValue();
-
-		// 	string value2 = property;
-		// 	if(values.Length > 1)
-		// 		value2 = values[1].GetTextValue();
-
-		// 	string condition = $"page => {property} {compareTokens} {comparableToken} ? {value1} : {value2}";
-		// 	return new ConditionalValue
-		// 	{
-		// 		Condition = CSharpScript.EvaluateAsync<Func<JLMLDocument, object>>(condition).GetAwaiter().GetResult()
-		// 	};
-		// }
 
 		public override HeaderValue VisitAssignheader([NotNull] JLMLParser.AssignheaderContext context)
 		{

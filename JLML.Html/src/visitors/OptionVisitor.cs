@@ -13,17 +13,20 @@ using Microsoft.CodeAnalysis.Scripting;
 
 namespace JLML.Html.Visitors
 {
+	/// <summary>
+	/// Visits options and translates into elements that are used by the element visitor.
+	/// </summary>
 	public class OptionVisitor : IOptionVisitor<IElement>
 	{
-		private ValueVisitor valueVisitor;
-		private PageContext pageContext;
+		private readonly ValueVisitor valueVisitor;
+		private readonly PageContext pageContext;
 		public OptionVisitor(PageContext pageContext, ValueVisitor valueVisitor)
 		{
 			this.pageContext = pageContext;
 			this.valueVisitor = valueVisitor;
 		}
 
-		public IElement Visit(ImportOptions options)
+		public IElement? Visit(ImportOptions options)
 		{
 			string importText = "";
 			var path = pageContext[options.IsFromSpecified
@@ -41,11 +44,11 @@ namespace JLML.Html.Visitors
 			if(!path.EndsWith(".jlml"))
 			{
 				if(!options.IsFromSpecified)
-					path = path + ".jlml";
+					path += ".jlml";
 				else if(options.ElementName.EndsWith(".jlml"))
-					path = path + options.ElementName;
+					path += options.ElementName;
 				else
-					path = path + options.ElementName + ".jlml";
+					path = $"{path}{options.ElementName}.jlml";
 			}
 			else {
 				takeCertainElement = true;
@@ -54,14 +57,15 @@ namespace JLML.Html.Visitors
 				importText = File.ReadAllText(path);
 			else
 			{
-				HttpClient client = new HttpClient();
-				try {
+				HttpClient client = new();
+				try
+				{
 					var resource = client.GetStringAsync(path).GetAwaiter().GetResult();
 
 					if (!string.IsNullOrWhiteSpace(resource))
 						importText = resource;
 				}
-				catch(Exception ex) { }
+				catch(Exception) { }
 			}
 
 			try {
@@ -69,17 +73,17 @@ namespace JLML.Html.Visitors
 				if(!takeCertainElement) return document.FirstOrDefault();
 				return document.FirstOrDefault(options.ElementName);
 			}
-			catch(System.Exception ex)
+			catch(Exception ex)
 			{
-				System.Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.Message);
 			}
 
 			return null;
 		}
 
-		public IElement Visit(ConditionalOptions options)
+		public IElement? Visit(ConditionalOptions options)
 		{
-			Type objectType = null;
+			Type? objectType = null;
 			string compareToString = string.Empty;
 			if(options.CompareToTokens is ConcatValue concat)
 			{

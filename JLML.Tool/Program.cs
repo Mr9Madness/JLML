@@ -22,7 +22,7 @@ namespace JLML.Tool
 			{
 				new Option<string>(new string[] { "-f", "--file" }),
 			};
-			command.Handler = CommandHandler.Create<string, string>(
+			command.Handler = CommandHandler.Create(
 				(string file, string output) => DoTask(Lang.Html, file, output)
 			);
 			var rootCommand = new RootCommand {
@@ -30,25 +30,27 @@ namespace JLML.Tool
 				new Option<string>(new string[] { "-o", "--output" })
 			};
 
-			rootCommand.InvokeAsync(args).Wait();
+			await rootCommand.InvokeAsync(args);
 		}
 
 		static async Task DoTask(Lang lang, string filePath, string outputDir)
 		{
-			if(!File.Exists(filePath)) throw new System.Exception("File does not exist");
+			if(!File.Exists(filePath)) throw new Exception("File does not exist");
 			if(!Directory.Exists(outputDir)) Console.WriteLine("Output directory does not exist. It will be created");
 
 			string fileName = Path.GetFileNameWithoutExtension(filePath);
 
-			CancellationTokenSource source = new CancellationTokenSource();
+			CancellationTokenSource source = new();
 			CancellationToken token = source.Token;
 
 			string fileText = await File.ReadAllTextAsync(filePath, Encoding.UTF8, token);
 
 			JLMLDocument script = JLMLDocumentLoader.Load(fileText);
 
-			IScriptable transpiler = lang switch {
+			IScriptable transpiler = lang switch
+			{
 				Lang.Html => new HtmlTranspiler(),
+				_ => throw new NotImplementedException(),
 			};
 			string contents = transpiler.ToScript(script);
 

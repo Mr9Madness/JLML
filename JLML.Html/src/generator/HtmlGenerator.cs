@@ -8,6 +8,15 @@ namespace JLML.Html.Generator
 {
 	public static class HtmlGenerator
 	{
+		private static Func<StringBuilder, string?, StringBuilder> Append = (StringBuilder builder, string? value) => builder.Append(value);
+		public static void SetFormatting(bool format)
+		{
+			if(format)
+				Append = (StringBuilder builder, string? value) => builder.AppendLine(value);
+			else if(!format)
+				Append = (StringBuilder builder, string? value) => builder.Append(value);
+		}
+
 		/// <summary>
 		/// Create the base body tag with provided options and child element/objects.
 		/// </summary>
@@ -15,20 +24,20 @@ namespace JLML.Html.Generator
 		{
 			StringBuilder builder = new StringBuilder();
 
-			builder.Append("<html>");
-			builder.Append("<head>");
+			Append(builder, "<html>");
+			Append(builder, "<head>");
 
 			var title = pageOptions["title"];
 			if(title != null)
-				builder.Append($"<title>{title}</title>");
+				Append(builder, $"<title>{title}</title>");
 
-			builder.Append("</head>");
-			builder.Append($"<body>");
+			Append(builder, "</head>");
+			Append(builder, $"<body>");
 
-			foreach (var child in childObjs) builder.Append(child);
+			foreach (var child in childObjs) Append(builder, child);
 
-			builder.Append("</body>");
-			builder.Append("</html>");
+			Append(builder, "</body>");
+			Append(builder, "</html>");
 
 			return builder.ToString();
 		}
@@ -40,23 +49,23 @@ namespace JLML.Html.Generator
 		/// </summary>
 		public static string CreateHtmlTag(string id, IEnumerable<string> text, IEnumerable<string> attrs, IEnumerable<string> childObjs)
 		{
-			StringBuilder builder = new StringBuilder();
+			StringBuilder builder = new();
 
 			string htmlId = GetHtmlElementNameFromId(id);
 
 			builder.Append($@"<{htmlId} {string.Join(' ', attrs)}");
 
-			if (text.Any() || childObjs.Any()) builder.Append(">");
+			if (text.Any() || childObjs.Any()) Append(builder, ">");
 			else
 			{
 				builder.Append(" />");
 				return builder.ToString();
 			}
 
-			foreach (var item in text) builder.Append(item);
-			foreach (var item in childObjs) builder.Append(item);
+			foreach (var item in text) Append(builder, item);
+			foreach (var item in childObjs) Append(builder, item);
 
-			builder.Append($"</{htmlId}>");
+			Append(builder, $"</{htmlId}>");
 
 			return builder.ToString();
 		}

@@ -11,14 +11,18 @@ using JLML.Visitors;
 
 namespace JLML.Html.Visitors
 {
+	/// <summary>
+	/// Visits elements and translates it into html
+	/// </summary>
 	public class ElementVisitor : IElementVisitor<string>
 	{
 		private readonly ValueVisitor valueVisitor;
 		private readonly OptionVisitor optionVisitor;
 
+		private readonly PageContext pageContext;
+
 		public static JLMLDocument BaseScript { get; private set; }
 
-		private PageContext pageContext;
 		public ElementVisitor(PageContext pageContext)
 		{
 			this.pageContext = pageContext;
@@ -115,7 +119,7 @@ namespace JLML.Html.Visitors
 			var imgElement = HtmlGenerator.CreateHtmlTag("img", textList, attrList, Enumerable.Empty<string>());
 			if(description == null) return imgElement;
 
-			List<string> objList = new List<string>
+			List<string> objList = new()
 			{
 				imgElement,
 				description.Accept(this),
@@ -158,7 +162,7 @@ namespace JLML.Html.Visitors
 					{
 						foreach (var item in list)
 						{
-							IElement loopElement = element.Clone() as IElement;
+							if(element.Clone() is not IElement loopElement) continue;
 							loopElement.Current[element.LoopOptions.ValueRef] = new DataValue {
 								Attribute = element.LoopOptions.ValueRef,
 								DataType = item.GetType(),

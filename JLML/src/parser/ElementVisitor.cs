@@ -13,14 +13,14 @@ namespace JLML.Parsers
 {
 	public class ElementVisitor : Generated.JLMLBaseVisitor<IElement>
 	{
-		private ValueVisitor valueVisitor = new ValueVisitor();
-		private OptionVisitor optionVisitor = new OptionVisitor();
+		private readonly ValueVisitor valueVisitor = new();
+		private readonly OptionVisitor optionVisitor = new();
 
 		private IElement currentElement = null;
 
 		public override JLMLDocument VisitJlml([NotNull] JLMLParser.JlmlContext context)
 		{
-			JLMLDocument baseScript = new JLMLDocument();
+			JLMLDocument baseScript = new();
 			currentElement = baseScript;
 
 			var headerContext = context.headers();
@@ -107,7 +107,7 @@ namespace JLML.Parsers
 
 		private IElement GetNamedElementOrDefault(JLMLParser.ElementkeyContext context)
 		{
-			IElement key = null;
+			IElement key;
 			if (context == null)
 				key = new Element();
 			else
@@ -116,9 +116,9 @@ namespace JLML.Parsers
 			return key;
 		}
 
-		private NamedElement GetNamedElement(string name, [Nullable] ImportOptions with, [Nullable] ConditionalOptions when, [Nullable] LoopOptions loop)
+		private static NamedElement GetNamedElement(string name, [Nullable] ImportOptions with, [Nullable] ConditionalOptions when, [Nullable] LoopOptions loop)
 		{
-			if(Enum.TryParse<ElementName>(name, true, out ElementName elementName))
+			if(Enum.TryParse(name, true, out ElementName elementName))
 			{
 				return elementName switch
 				{
