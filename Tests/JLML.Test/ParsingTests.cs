@@ -9,6 +9,9 @@ namespace JLML.Test
 {
 	public class ParsingTests
 	{
+		/// <summary>
+		/// Test function to test a test file in the project and check if its not null
+		/// </summary>
 		[Fact]
 		public async Task TestDocumentAsync()
 		{
@@ -18,11 +21,14 @@ namespace JLML.Test
 			Assert.NotNull(script);
 		}
 
+		/// <summary>
+		/// Test function to test a specific jlml code block and check if its not null and if the base element is not null and has the excepted attr's and children
+		/// </summary>
 		[Fact]
-		public void TestStringAsync()
+		public void TestString()
 		{
 			string jlmlHeaders = @"set page.title ""Quick example"";";
-			string jlmlContent = @"form: { 
+			string jlmlContent = @"form: {
 			input: {type: ""text""; placeholder: ""Test value""}
 			select: {values: (""First"", ""Second"");option: for value in values { value: value;}}
 			}";

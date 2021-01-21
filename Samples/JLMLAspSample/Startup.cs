@@ -55,9 +55,9 @@ namespace JLMLAspSample
 				{
 					StringBuilder builder = new("<html><body><ul>");
 
-					builder.AppendLine($"<li><a href=\"samples/test.jlml\">test.jlml</a> <a href=\"compare/test.jlml\">(compare)</a></li>");
-					builder.AppendLine($"<li><a href=\"samples/pack.jlml\">pack.jlml</a> <a href=\"compare/pack.jlml\">(compare)</a></li>");
-					builder.AppendLine($"<li><a href=\"samples/basic.jlml\">basic.jlml</a> <a href=\"compare/basic.jlml\">(compare)</a></li>");
+					builder.AppendLine($"<li><a href=\"samples/test.jlml\">test.jlml</a> <a href=\"compile/test.jlml\">(view html)</a> <a href=\"compare/test.jlml\">(compare)</a></li>");
+					builder.AppendLine($"<li><a href=\"samples/pack.jlml\">pack.jlml</a> <a href=\"compile/pack.jlml\">(view html)</a> <a href=\"compare/pack.jlml\">(compare)</a></li>");
+					builder.AppendLine($"<li><a href=\"samples/basic.jlml\">basic.jlml</a> <a href=\"compile/basic.jlml\">(view html)</a> <a href=\"compare/basic.jlml\">(compare)</a></li>");
 					builder.AppendLine("</ul></body></html>");
 
 					await context.Response.WriteAsync(builder.ToString());
