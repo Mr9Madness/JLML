@@ -1,6 +1,6 @@
 // Headers statements
-declare jlml "jlml.github.io/pack/";
-declare images "jlml.github.io/images/";
+declare jlml "https://mr9madness.github.io/JLML/samples/pack.jlml";
+declare images "https://via.placeholder.com/";
 
 // Document base element
 {
@@ -9,9 +9,9 @@ declare images "jlml.github.io/images/";
     // Value with an using option
     nav: using nav from page.jlml;
 
-    image: if page.width < 900
+    image:
     {
-        src: $(page.images, "placeholder-600x400");
+        src: $(images, "600x400");
         description: {
             text: "Only shown when screen is smaller then 900 pixels"
         }
